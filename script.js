@@ -82,7 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackMessage += `Your scores: ${JSON.stringify(scores)}`;
 
         try {
-            await window.db.collection('surveyResponses').add({ ...responses, ...scores });
+            // Import Firestore methods dynamically to ensure they're available
+            const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
+            await addDoc(collection(window.db, 'surveyResponses'), { ...responses, ...scores });
             alert(feedbackMessage);
             e.target.reset();
         } catch (error) {
@@ -98,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactData = {};
         formData.forEach((value, key) => contactData[key] = value);
         try {
-            await window.db.collection('contactMessages').add(contactData);
+            // Import Firestore methods dynamically to ensure they're available
+            const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
+            await addDoc(collection(window.db, 'contactMessages'), contactData);
             alert('Message sent!');
             e.target.reset();
         } catch (error) {
