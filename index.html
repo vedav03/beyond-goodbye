@@ -1,13 +1,28 @@
 <!DOCTYPE html>
    <html lang="en">
    <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>Beyond Goodbye - Death Literacy</title>
-       <link rel="stylesheet" href="styles.css">
-       <!-- Firebase SDK -->
-       <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-       <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+<script type="module">
+  // Import Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+      apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
+      authDomain: "beyond-goodbye.firebaseapp.com",
+      projectId: "beyond-goodbye",
+      storageBucket: "beyond-goodbye.firebasestorage.app",
+      messagingSenderId: "658341235982",
+      appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Export db for use in script.js
+  window.db = db;
+</script>
    </head>
    <body>
        <header>
