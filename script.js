@@ -1,111 +1,86 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Show/hide state dropdown based on country
-    document.getElementById('q1').addEventListener('change', function() {
-        const q1_1Container = document.getElementById('q1_1_container');
-        q1_1Container.style.display = this.value === 'Australia' ? 'block' : 'none';
+// Firebase configuration (your details from the Firebase console)
+const firebaseConfig = {
+    apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
+    authDomain: "beyond-goodbye.firebaseapp.com",
+    projectId: "beyond-goodbye",
+    storageBucket: "beyond-goodbye.firebasestorage.app",
+    messagingSenderId: "658341235982",
+    appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Show/hide state dropdown based on country
+document.getElementById('q1').addEventListener('change', function() {
+    const q1_1Container = document.getElementById('q1_1_container');
+    q1_1Container.style.display = this.value === 'Australia' ? 'block' : 'none';
+});
+
+// Calculate DLI score
+function calculateDLIScore(responses) {
+    const dliQuestions = [
+        'q16_1', 'q16_2', 'q16_3', 'q16_4',
+        'q17_1', 'q17_2', 'q17_3', 'q17_4',
+        'q18_1', 'q18_2', 'q18_3', 'q18_4', 'q18_5',
+        'q19_1', 'q19_2', 'q19_3', 'q19_4', 'q19_5', 'q19_6', 'q19_7',
+        'q20_1', 'q20_2', 'q20_3', 'q20_4', 'q20_5',
+        'q21_1', 'q21_2', 'q21_3', 'q21_4'
+    ];
+    let totalScore = 0;
+    dliQuestions.forEach(q => {
+        totalScore += parseInt(responses[q] || 0);
     });
+    const scaledScore = (totalScore / (dliQuestions.length * 5)) * 10; // Scale to 0-10
+    return scaledScore;
+}
 
-    // Calculate scores for each area
-    function calculateScores(responses) {
-        const scores = {};
-        scores.talkingSupport = (parseInt(responses.q15 || 0) + parseInt(responses.q16 || 0) +
-            parseInt(responses.q17 || 0) + parseInt(responses.q18 || 0)) / 4;
-        scores.handsOnSupport = (parseInt(responses.q19 || 0) + parseInt(responses.q20 || 0) +
-            parseInt(responses.q21 || 0) + parseInt(responses.q22 || 0)) / 4;
-        scores.practicalKnowledge = (parseInt(responses.q23 || 0) + parseInt(responses.q24 || 0) +
-            parseInt(responses.q25 || 0) + parseInt(responses.q26 || 0) +
-            parseInt(responses.q27 || 0) + parseInt(responses.q28 || 0) + parseInt(responses.q29 || 0)) / 7;
-        scores.experience = (parseInt(responses.q3 === 'Yes' ? 1 : 0) + parseInt(responses.q4 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q5 === 'Yes' ? 1 : 0) + parseInt(responses.q6 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q7 === 'Yes' ? 1 : 0) + parseInt(responses.q8 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q9 === 'Yes' ? 1 : 0) + parseInt(responses.q10 === 'Yes' ? 1 : 0)) / 8;
-        scores.knowledge = (parseInt(responses.q39 || 0) + parseInt(responses.q40 || 0) +
-            parseInt(responses.q41 || 0) + parseInt(responses.q42 || 0) +
-            parseInt(responses.q43 || 0) + parseInt(responses.q44 || 0) +
-            parseInt(responses.q45 || 0) + parseInt(responses.q46 || 0) + parseInt(responses.q47 || 0)) / 9;
-        scores.communitySupport1 = (parseInt(responses.q11 || 0) + parseInt(responses.q12 || 0) +
-            parseInt(responses.q13 || 0) + parseInt(responses.q14 || 0)) / 4;
-        scores.communitySupport2 = (parseInt(responses.q30 || 0) + parseInt(responses.q31 || 0) +
-            parseInt(responses.q32 || 0) + parseInt(responses.q33 || 0) + parseInt(responses.q34 || 0) +
-            parseInt(responses.q35 || 0) + parseInt(responses.q36 || 0) +
-            parseInt(responses.q37 || 0) + parseInt(responses.q38 || 0)) / 9;
-        scores.communityOverall = (scores.communitySupport1 + scores.communitySupport2) / 2;
-        scores.dliOverall = (scores.talkingSupport + scores.handsOnSupport + scores.practicalKnowledge +
-            scores.experience + scores.knowledge + scores.communityOverall) / 6;
-        return scores;
-    }
-
-    // Get feedback based on score and range
-    function getFeedback(area, score, actualScore, ranges) {
-        if (score < ranges.lower) return { howYouScored: `You scored lower than others in ${area}.`, whatThisMeans: `You might not feel confident yet—and that’s okay.`, whatYouCanDo: `Try learning more or joining a group.` };
-        else if (score >= ranges.lower && score <= ranges.higher) return { howYouScored: `Your score is similar to most in ${area}.`, whatThisMeans: `You have a solid base.`, whatYouCanDo: `Keep practicing.` };
-        else return { howYouScored: `You scored higher than most in ${area}.`, whatThisMeans: `You’re skilled here.`, whatYouCanDo: `Share your knowledge.` };
-    }
-
-    // Handle survey submission
-    document.getElementById('dli-survey').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log('Form submission prevented');
-        const formData = new FormData(e.target);
-        const responses = {};
-        formData.forEach((value, key) => responses[key] = value);
-
-        const scores = calculateScores(responses);
-        const ranges = {
-            talkingSupport: { actual: 5.46, lower: 4.24, higher: 6.68 },
-            handsOnSupport: { actual: 4.62, lower: 3.35, higher: 5.89 },
-            practicalKnowledge: { actual: 5.04, lower: 3.94, higher: 6.14 },
-            experience: { actual: 5.9, lower: 4.75, higher: 7.05 },
-            knowledge: { actual: 3.79, lower: 2.50, higher: 5.08 },
-            communitySupport1: { actual: 4.15, lower: 2.91, higher: 5.39 },
-            communitySupport2: { actual: 5.06, lower: 3.88, higher: 6.24 },
-            communityOverall: { actual: 4.6, lower: 3.50, higher: 5.70 },
-            dliOverall: { actual: 4.83, lower: 3.86, higher: 5.80 }
-        };
-
-        const feedback = {
-            talkingSupport: getFeedback('Talking Support', scores.talkingSupport, ranges.talkingSupport.actual, ranges.talkingSupport),
-            handsOnSupport: getFeedback('Hands-on Support', scores.handsOnSupport, ranges.handsOnSupport.actual, ranges.handsOnSupport),
-            practicalKnowledge: getFeedback('Practical Knowledge', scores.practicalKnowledge, ranges.practicalKnowledge.actual, ranges.practicalKnowledge),
-            experience: getFeedback('Experience', scores.experience, ranges.experience.actual, ranges.experience),
-            knowledge: getFeedback('Knowledge', scores.knowledge, ranges.knowledge.actual, ranges.knowledge),
-            communitySupport1: getFeedback('Community Support 1', scores.communitySupport1, ranges.communitySupport1.actual, ranges.communitySupport1),
-            communitySupport2: getFeedback('Community Support 2', scores.communitySupport2, ranges.communitySupport2.actual, ranges.communitySupport2),
-            communityOverall: getFeedback('Community Overall', scores.communityOverall, ranges.communityOverall.actual, ranges.communityOverall),
-            dliOverall: getFeedback('Death Literacy Index', scores.dliOverall, ranges.dliOverall.actual, ranges.dliOverall)
-        };
-
-        let feedbackMessage = 'Survey submitted! Here are your results:\n\n';
-        for (const [area, fb] of Object.entries(feedback)) {
-            feedbackMessage += `${area}:\n- How You Scored: ${fb.howYouScored}\n- What This Means: ${fb.whatThisMeans}\n- What You Can Do: ${fb.whatYouCanDo}\n\n`;
-        }
-        feedbackMessage += `Your scores: ${JSON.stringify(scores)}`;
-
-        try {
-            const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
-            await addDoc(collection(window.db, 'surveyResponses'), { ...responses, ...scores });
-            alert(feedbackMessage);
-            e.target.reset();
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error submitting. Check console.');
-        }
+// Handle survey submission
+document.getElementById('dli-survey').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const responses = {};
+    formData.forEach((value, key) => {
+        responses[key] = value;
     });
+    const dliScore = calculateDLIScore(responses);
+    const benchmark = 6; // Replace with actual benchmark from Excel sheet
+    let feedback = '';
+    if (Math.abs(dliScore - benchmark) <= 1) {
+        feedback = 'You scored in a range close to or the same as the Australian National Benchmark.';
+    } else if (dliScore < benchmark) {
+        feedback = 'You scored in a range lower than the Australian National Benchmark.';
+    } else {
+        feedback = 'You scored in a range higher than the Australian National Benchmark.';
+    }
+    try {
+        await db.collection('surveyResponses').add({ ...responses, dliScore });
+        alert(`Survey submitted! Your DLI Score: ${dliScore.toFixed(1)}/10\n${feedback}`);
+        e.target.reset(); // Clear the form
+    } catch (error) {
+        console.error('Error saving responses:', error);
+        alert('Error submitting survey. Please try again.');
+    }
+});
 
-    // Handle contact form submission
-    document.getElementById('contact-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const contactData = {};
-        formData.forEach((value, key) => contactData[key] = value);
-        try {
-            const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
-            await addDoc(collection(window.db, 'contactMessages'), contactData);
-            alert('Message sent!');
-            e.target.reset();
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error sending. Check console.');
+// Handle contact form submission
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const contactData = {};
+    formData.forEach((value, key) => {
+        contactData[key] = value;
+    });
+    try {
+        await db.collection('contactMessages').add(contactData);
+        alert('Message sent successfully!');
+        e.target.reset(); // Clear the form
+    } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Error sending message. Please try again.');
+    }
+});
         }
     });
 });
