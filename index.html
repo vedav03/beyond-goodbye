@@ -4,7 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beyond Goodbye</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Style the header and logo */
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .logo {
+            max-width: 200px; /* Limit logo width */
+            max-height: 100px; /* Limit logo height */
+            object-fit: contain; /* Maintain aspect ratio */
+        }
+
+        /* Center the survey section */
+        .survey {
+            max-width: 800px; /* Constrain width */
+            margin: 0 auto; /* Center the section */
+            padding: 20px;
+        }
+
+        /* Style labels and selects */
+        label {
+            display: block; /* Stack labels vertically */
+            margin: 10px 0;
+            text-align: center; /* Center text within labels */
+        }
+
+        select {
+            width: 200px; /* Fixed width for consistency */
+            margin: 0 auto; /* Center the select element */
+            display: inline-block;
+        }
+
+        /* Hide state dropdown by default */
+        #q1_1_container {
+            display: none;
+        }
+    </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
@@ -39,13 +75,13 @@
     <section class="survey">
         <h2>Death Literacy Survey</h2>
         <form id="dli-survey">
-            <label>Country of residence: <select name="q1" id="q1">
+            <label>1: Country of residence: <select name="q1" id="q1">
                 <option value="">Select a country</option>
                 <option value="Australia">Australia</option>
                 <option value="Other">Other</option>
             </select></label>
             <div id="q1_1_container" style="display:none;">
-                <label>State: <select name="q1_1">
+                <label>2: State: <select name="q2">
                     <option value="">Select a state</option>
                     <option value="NSW">NSW</option>
                     <option value="VIC">VIC</option>
@@ -57,83 +93,75 @@
                     <option value="ACT">ACT</option>
                 </select></label>
             </div>
-            <label>Q7: Have you witnessed the death of another person? <select name="q7">
+            <label>3: Have you witnessed the death of another person? <select name="q3">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q8: Have you attended a funeral or memorial service? <select name="q8">
+            <label>4: Have you attended a funeral or memorial service? <select name="q4">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q9: Have you supported someone who was grieving? <select name="q9">
+            <label>5: Have you supported someone who was grieving? <select name="q5">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q10: Have you discussed end-of-life wishes with someone? <select name="q10">
+            <label>6: Have you discussed end-of-life wishes with someone? <select name="q6">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q11: Have you helped organize a funeral or memorial? <select name="q11">
+            <label>7: Have you helped organize a funeral or memorial? <select name="q7">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q12: Have you been involved in palliative care? <select name="q12">
+            <label>8: Have you been involved in palliative care? <select name="q8">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q13: Have you made your own end-of-life plans? <select name="q13">
+            <label>9: Have you made your own end-of-life plans? <select name="q9">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q14: Have you experienced the death of a close family member? <select name="q14">
+            <label>10: Have you experienced the death of a close family member? <select name="q10">
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select></label>
-            <label>Q15_1: I feel supported by my community in discussing death (1-4): <select name="q15_1">
+            <label>11: I feel supported by my community in discussing death (1-4): <select name="q11">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select></label>
-            <label>Q15_2: My community provides resources for end-of-life planning (1-4): <select name="q15_2">
+            <label>12: My community provides resources for end-of-life planning (1-4): <select name="q12">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select></label>
-            <label>Q15_3: I feel comfortable seeking community support for death-related matters (1-4): <select name="q15_3">
+            <label>13: I feel comfortable seeking community support for death-related matters (1-4): <select name="q13">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select></label>
-            <label>Q15_4: My community openly discusses death and dying (1-4): <select name="q15_4">
+            <label>14: My community openly discusses death and dying (1-4): <select name="q14">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select></label>
-            <label>Q16_1: I feel comfortable talking about death with family (1-5): <select name="q16_1">
-                <option value="">Select an option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select></label>
-            <label>Q16_2: I feel comfortable talking about death with friends (1-5): <select name="q16_2">
+            <label>15: I feel comfortable talking about death with family (1-5): <select name="q15">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -141,7 +169,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q16_3: I feel comfortable discussing end-of-life wishes (1-5): <select name="q16_3">
+            <label>16: I feel comfortable talking about death with friends (1-5): <select name="q16">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -149,7 +177,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q16_4: I feel comfortable raising death-related topics (1-5): <select name="q16_4">
+            <label>17: I feel comfortable discussing end-of-life wishes (1-5): <select name="q17">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -157,7 +185,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q17_1: I have experience providing hands-on care at end-of-life (1-5): <select name="q17_1">
+            <label>18: I feel comfortable raising death-related topics (1-5): <select name="q18">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -165,7 +193,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q17_2: I feel confident assisting with physical care needs (1-5): <select name="q17_2">
+            <label>19: I have experience providing hands-on care at end-of-life (1-5): <select name="q19">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -173,7 +201,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q17_3: I have supported someone physically during dying (1-5): <select name="q17_3">
+            <label>20: I feel confident assisting with physical care needs (1-5): <select name="q20">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -181,7 +209,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q17_4: I feel prepared to help with hands-on care (1-5): <select name="q17_4">
+            <label>21: I have supported someone physically during dying (1-5): <select name="q21">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -189,7 +217,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_1: I know how to access palliative care services (1-5): <select name="q19_1">
+            <label>22: I feel prepared to help with hands-on care (1-5): <select name="q22">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -197,7 +225,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_2: I understand how to arrange a funeral (1-5): <select name="q19_2">
+            <label>23: I know how to access palliative care services (1-5): <select name="q23">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -205,7 +233,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_3: I know how to access grief counseling (1-5): <select name="q19_3">
+            <label>24: I understand how to arrange a funeral (1-5): <select name="q24">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -213,7 +241,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_4: I understand legal requirements for death certificates (1-5): <select name="q19_4">
+            <label>25: I know how to access grief counseling (1-5): <select name="q25">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -221,7 +249,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_5: I know how to notify authorities after a death (1-5): <select name="q19_5">
+            <label>26: I understand legal requirements for death certificates (1-5): <select name="q26">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -229,7 +257,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_6: I understand how to manage estate matters (1-5): <select name="q19_6">
+            <label>27: I know how to notify authorities after a death (1-5): <select name="q27">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -237,7 +265,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q19_7: I know how to support someone practically after a death (1-5): <select name="q19_7">
+            <label>28: I understand how to manage estate matters (1-5): <select name="q28">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -245,7 +273,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q20_1: My community organizes death literacy events (1-5): <select name="q20_1">
+            <label>29: I know how to support someone practically after a death (1-5): <select name="q29">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -253,7 +281,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q20_2: My community provides spaces to discuss death (1-5): <select name="q20_2">
+            <label>30: My community organizes death literacy events (1-5): <select name="q30">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -261,7 +289,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q20_3: My community supports families during grief (1-5): <select name="q20_3">
+            <label>31: My community provides spaces to discuss death (1-5): <select name="q31">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -269,7 +297,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q20_4: My community encourages end-of-life planning (1-5): <select name="q20_4">
+            <label>32: My community supports families during grief (1-5): <select name="q32">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -277,7 +305,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q20_5: My community is engaged in death-related matters (1-5): <select name="q20_5">
+            <label>33: My community encourages end-of-life planning (1-5): <select name="q33">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -285,7 +313,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q21_1: I feel my community understands death literacy (1-5): <select name="q21_1">
+            <label>34: My community is engaged in death-related matters (1-5): <select name="q34">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -293,7 +321,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q21_2: My community supports palliative care initiatives (1-5): <select name="q21_2">
+            <label>35: I feel my community understands death literacy (1-5): <select name="q35">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -301,7 +329,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q21_3: My community offers grief support programs (1-5): <select name="q21_3">
+            <label>36: My community supports palliative care initiatives (1-5): <select name="q36">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -309,7 +337,7 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q21_4: My community promotes death education (1-5): <select name="q21_4">
+            <label>37: My community offers grief support programs (1-5): <select name="q37">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -317,7 +345,15 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select></label>
-            <label>Q22_1: I understand palliative care options (1-7): <select name="q22_1">
+            <label>38: My community promotes death education (1-5): <select name="q38">
+                <option value="">Select an option</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select></label>
+            <label>39: I understand palliative care options (1-7): <select name="q39">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -327,7 +363,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_2: I know about advance care directives (1-7): <select name="q22_2">
+            <label>40: I know about advance care directives (1-7): <select name="q40">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -337,7 +373,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_3: I understand organ donation processes (1-7): <select name="q22_3">
+            <label>41: I understand organ donation processes (1-7): <select name="q41">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -347,7 +383,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_4: I know about funeral planning options (1-7): <select name="q22_4">
+            <label>42: I know about funeral planning options (1-7): <select name="q42">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -357,7 +393,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_5: I understand legal requirements for wills (1-7): <select name="q22_5">
+            <label>43: I understand legal requirements for wills (1-7): <select name="q43">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -367,7 +403,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_6: I know about grief support services (1-7): <select name="q22_6">
+            <label>44: I know about grief support services (1-7): <select name="q44">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -377,7 +413,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_7: I understand how to access death-related resources (1-7): <select name="q22_7">
+            <label>45: I understand how to access death-related resources (1-7): <select name="q45">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -387,7 +423,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_8: I know about cultural practices around death (1-7): <select name="q22_8">
+            <label>46: I know about cultural practices around death (1-7): <select name="q46">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -397,7 +433,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select></label>
-            <label>Q22_9: I understand the role of hospice care (1-7): <select name="q22_9">
+            <label>47: I understand the role of hospice care (1-7): <select name="q47">
                 <option value="">Select an option</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
