@@ -3,44 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Beyond Goodbye</title>
-    <style>
-        /* Style the header and logo */
-        header {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .logo {
-            max-width: 200px; /* Limit logo width */
-            max-height: 100px; /* Limit logo height */
-            object-fit: contain; /* Maintain aspect ratio */
-        }
-
-        /* Center the survey section */
-        .survey {
-            max-width: 800px; /* Constrain width */
-            margin: 0 auto; /* Center the section */
-            padding: 20px;
-        }
-
-        /* Style labels and selects */
-        label {
-            display: block; /* Stack labels vertically */
-            margin: 10px 0;
-            text-align: center; /* Center text within labels */
-        }
-
-        select {
-            width: 200px; /* Fixed width for consistency */
-            margin: 0 auto; /* Center the select element */
-            display: inline-block;
-        }
-
-        /* Hide state dropdown by default */
-        #q1_1_container {
-            display: none;
-        }
-    </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
