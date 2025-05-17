@@ -8,27 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate scores for each area
     function calculateScores(responses) {
         const scores = {};
-        scores.talkingSupport = (parseInt(responses.q16_1 || 0) + parseInt(responses.q16_2 || 0) +
-            parseInt(responses.q16_3 || 0) + parseInt(responses.q16_4 || 0)) / 4;
-        scores.handsOnSupport = (parseInt(responses.q17_1 || 0) + parseInt(responses.q17_2 || 0) +
-            parseInt(responses.q17_3 || 0) + parseInt(responses.q17_4 || 0)) / 4;
-        scores.practicalKnowledge = (parseInt(responses.q19_1 || 0) + parseInt(responses.q19_2 || 0) +
-            parseInt(responses.q19_3 || 0) + parseInt(responses.q19_4 || 0) +
-            parseInt(responses.q19_5 || 0) + parseInt(responses.q19_6 || 0) + parseInt(responses.q19_7 || 0)) / 7;
-        scores.experience = (parseInt(responses.q7 === 'Yes' ? 1 : 0) + parseInt(responses.q8 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q9 === 'Yes' ? 1 : 0) + parseInt(responses.q10 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q11 === 'Yes' ? 1 : 0) + parseInt(responses.q12 === 'Yes' ? 1 : 0) +
-            parseInt(responses.q13 === 'Yes' ? 1 : 0) + parseInt(responses.q14 === 'Yes' ? 1 : 0)) / 8;
-        scores.knowledge = (parseInt(responses.q22_1 || 0) + parseInt(responses.q22_2 || 0) +
-            parseInt(responses.q22_3 || 0) + parseInt(responses.q22_4 || 0) +
-            parseInt(responses.q22_5 || 0) + parseInt(responses.q22_6 || 0) +
-            parseInt(responses.q22_7 || 0) + parseInt(responses.q22_8 || 0) + parseInt(responses.q22_9 || 0)) / 9;
-        scores.communitySupport1 = (parseInt(responses.q15_1 || 0) + parseInt(responses.q15_2 || 0) +
-            parseInt(responses.q15_3 || 0) + parseInt(responses.q15_4 || 0)) / 4;
-        scores.communitySupport2 = (parseInt(responses.q20_1 || 0) + parseInt(responses.q20_2 || 0) +
-            parseInt(responses.q20_3 || 0) + parseInt(responses.q20_4 || 0) + parseInt(responses.q20_5 || 0) +
-            parseInt(responses.q21_1 || 0) + parseInt(responses.q21_2 || 0) +
-            parseInt(responses.q21_3 || 0) + parseInt(responses.q21_4 || 0)) / 9;
+        scores.talkingSupport = (parseInt(responses.q15 || 0) + parseInt(responses.q16 || 0) +
+            parseInt(responses.q17 || 0) + parseInt(responses.q18 || 0)) / 4;
+        scores.handsOnSupport = (parseInt(responses.q19 || 0) + parseInt(responses.q20 || 0) +
+            parseInt(responses.q21 || 0) + parseInt(responses.q22 || 0)) / 4;
+        scores.practicalKnowledge = (parseInt(responses.q23 || 0) + parseInt(responses.q24 || 0) +
+            parseInt(responses.q25 || 0) + parseInt(responses.q26 || 0) +
+            parseInt(responses.q27 || 0) + parseInt(responses.q28 || 0) + parseInt(responses.q29 || 0)) / 7;
+        scores.experience = (parseInt(responses.q3 === 'Yes' ? 1 : 0) + parseInt(responses.q4 === 'Yes' ? 1 : 0) +
+            parseInt(responses.q5 === 'Yes' ? 1 : 0) + parseInt(responses.q6 === 'Yes' ? 1 : 0) +
+            parseInt(responses.q7 === 'Yes' ? 1 : 0) + parseInt(responses.q8 === 'Yes' ? 1 : 0) +
+            parseInt(responses.q9 === 'Yes' ? 1 : 0) + parseInt(responses.q10 === 'Yes' ? 1 : 0)) / 8;
+        scores.knowledge = (parseInt(responses.q39 || 0) + parseInt(responses.q40 || 0) +
+            parseInt(responses.q41 || 0) + parseInt(responses.q42 || 0) +
+            parseInt(responses.q43 || 0) + parseInt(responses.q44 || 0) +
+            parseInt(responses.q45 || 0) + parseInt(responses.q46 || 0) + parseInt(responses.q47 || 0)) / 9;
+        scores.communitySupport1 = (parseInt(responses.q11 || 0) + parseInt(responses.q12 || 0) +
+            parseInt(responses.q13 || 0) + parseInt(responses.q14 || 0)) / 4;
+        scores.communitySupport2 = (parseInt(responses.q30 || 0) + parseInt(responses.q31 || 0) +
+            parseInt(responses.q32 || 0) + parseInt(responses.q33 || 0) + parseInt(responses.q34 || 0) +
+            parseInt(responses.q35 || 0) + parseInt(responses.q36 || 0) +
+            parseInt(responses.q37 || 0) + parseInt(responses.q38 || 0)) / 9;
         scores.communityOverall = (scores.communitySupport1 + scores.communitySupport2) / 2;
         scores.dliOverall = (scores.talkingSupport + scores.handsOnSupport + scores.practicalKnowledge +
             scores.experience + scores.knowledge + scores.communityOverall) / 6;
@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackMessage += `Your scores: ${JSON.stringify(scores)}`;
 
         try {
-            // Import Firestore methods dynamically to ensure they're available
             const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
             await addDoc(collection(window.db, 'surveyResponses'), { ...responses, ...scores });
             alert(feedbackMessage);
@@ -100,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactData = {};
         formData.forEach((value, key) => contactData[key] = value);
         try {
-            // Import Firestore methods dynamically to ensure they're available
             const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js");
             await addDoc(collection(window.db, 'contactMessages'), contactData);
             alert('Message sent!');
