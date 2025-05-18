@@ -1,17 +1,3 @@
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
-    authDomain: "beyond-goodbye.firebaseapp.com",
-    projectId: "beyond-goodbye",
-    storageBucket: "beyond-goodbye.firebasestorage.app",
-    messagingSenderId: "658341235982",
-    appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 // Show/hide state dropdown based on country
 document.getElementById('q1').addEventListener('change', function() {
     const q1_1Container = document.getElementById('q1_1_container');
@@ -335,7 +321,7 @@ document.getElementById('dli-survey').addEventListener('submit', async (e) => {
 
     try {
         // Save responses to Firebase
-        await db.collection('surveyResponses').add(responses);
+        await window.db.collection('surveyResponses').add(responses);
 
         // Generate and display feedback
         const feedbackContent = document.getElementById('feedback-content');
@@ -362,11 +348,14 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
         contactData[key] = value;
     });
     try {
-        await db.collection('contactMessages').add(contactData);
+        await window.db.collection('contactMessages').add(contactData);
         alert('Message sent successfully!');
         e.target.reset();
     } catch (error) {
         console.error('Error sending message:', error);
+        alert('Error sending message. Please try again.');
+    }
+});.error('Error sending message:', error);
         alert('Error sending message. Please try again.');
     }
 });
