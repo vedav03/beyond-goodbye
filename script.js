@@ -8,10 +8,10 @@ async function waitForFirebase() {
         let attempts = 0;
 
         const checkFirebase = setInterval(() => {
-            if (window.db) {
+            if (window.db && typeof window.db === 'object' && window.db.type === 'firestore') {
                 clearInterval(checkFirebase);
                 resolve(window.db);
-            } else if (attempts >= maxAttempts) {
+            } else if (window.db === null || attempts >= maxAttempts) {
                 clearInterval(checkFirebase);
                 reject(new Error('Firebase initialization failed or timed out. Check console for details and refresh the page.'));
             }
