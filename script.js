@@ -5,12 +5,12 @@ async function waitForFirebase() {
         let attempts = 0;
 
         const checkFirebase = setInterval(() => {
-            if (window.db) {
+            if (window.db && typeof window.db.collection === 'function') {
                 clearInterval(checkFirebase);
                 resolve(window.db);
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkFirebase);
-                reject(new Error('Firebase initialization timed out. Please refresh the page and try again.'));
+                reject(new Error('Firebase initialization failed or timed out. Check console for details and refresh the page.'));
             }
             attempts++;
         }, 100); // Check every 100ms
@@ -357,7 +357,7 @@ document.getElementById('dli-survey').addEventListener('submit', async (e) => {
         e.target.reset();
     } catch (error) {
         console.error('Error saving responses:', error);
-        alert(error.message || 'Error submitting survey. Please try again.');
+        alert(error.message || 'Error submitting survey. Please check the console for details and try again.');
     }
 });
 
@@ -380,6 +380,6 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
         e.target.reset();
     } catch (error) {
         console.error('Error sending message:', error);
-        alert(error.message || 'Error sending message. Please try again.');
+        alert(error.message || 'Error sending message. Please check the console for details and try again.');
     }
 });
