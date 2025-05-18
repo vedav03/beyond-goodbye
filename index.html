@@ -17,11 +17,15 @@
                messagingSenderId: "658341235982",
                appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
            };
-           // Initialize Firebase
-           const app = initializeApp(firebaseConfig);
-           const db = getFirestore(app);
-           // Export db for use in script.js
-           window.db = db;
+           try {
+               // Initialize Firebase
+               const app = initializeApp(firebaseConfig);
+               const db = getFirestore(app);
+               window.db = db;
+               console.log('Firebase initialized successfully, window.db is set:', window.db);
+           } catch (error) {
+               console.error('Firebase initialization failed:', error);
+           }
        </script>
    </head>
    <body>
