@@ -21,8 +21,12 @@
                // Initialize Firebase
                const app = initializeApp(firebaseConfig);
                const db = getFirestore(app);
-               window.db = db;
-               console.log('Firebase initialized successfully, window.db is set:', window.db);
+               if (db && typeof db.collection === 'function') {
+                   window.db = db;
+                   console.log('Firebase initialized successfully, window.db is a Firestore instance:', window.db);
+               } else {
+                   console.error('Firebase initialization error: db is not a valid Firestore instance', db);
+               }
            } catch (error) {
                console.error('Firebase initialization failed:', error);
            }
