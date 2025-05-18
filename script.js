@@ -1,23 +1,25 @@
-// Import necessary Firestore functions for modular syntax
-   import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+   import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-   // Helper function to wait for Firebase initialization
-   async function waitForFirebase() {
-       return new Promise((resolve, reject) => {
-           const maxAttempts = 50; // Try for 5 seconds (50 * 100ms)
-           let attempts = 0;
+   // Firebase configuration
+   const firebaseConfig = {
+       apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
+       authDomain: "beyond-goodbye.firebaseapp.com",
+       projectId: "beyond-goodbye",
+       storageBucket: "beyond-goodbye.firebasestorage.app",
+       messagingSenderId: "658341235982",
+       appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
+   };
 
-           const checkFirebase = setInterval(() => {
-               if (window.db) {
-                   clearInterval(checkFirebase);
-                   resolve(window.db);
-               } else if (attempts >= maxAttempts) {
-                   clearInterval(checkFirebase);
-                   reject(new Error('Firebase initialization failed or timed out. Check console for details and refresh the page.'));
-               }
-               attempts++;
-           }, 100); // Check every 100ms
-       });
+   // Initialize Firebase
+   let db;
+   try {
+       const app = initializeApp(firebaseConfig);
+       db = getFirestore(app);
+       console.log('Firebase initialized successfully in script.js');
+   } catch (error) {
+       console.error('Firebase initialization failed:', error);
+       alert('Failed to initialize Firebase. Please check the console and refresh the page.');
    }
 
    // Show/hide state dropdown based on country
@@ -294,7 +296,6 @@
            let score;
 
            if (maxScoreMap) {
-               // For areas like Community (Overall) with mixed max scores
                let totalScore = 0;
                let totalPossible = 0;
                questions.forEach(q => {
@@ -303,9 +304,8 @@
                    totalScore += qScore;
                    totalPossible += qMax;
                });
-               score = (totalScore / totalPossible) * 10; // Scale to 0-10
+               score = (totalScore / totalPossible) * 10;
            } else {
-               // For areas with uniform max scores
                score = calculateScaledMean(responses, questions, maxScore);
            }
 
@@ -342,21 +342,18 @@
        });
 
        try {
-           // Wait for Firebase to be ready
-           const db = await waitForFirebase();
+           if (!db) {
+               throw new Error('Firestore database not initialized. Please refresh the page.');
+           }
 
-           // Save responses to Firestore using modular syntax
            await addDoc(collection(db, 'surveyResponses'), responses);
 
-           // Generate and display feedback
            const feedbackContent = document.getElementById('feedback-content');
            feedbackContent.innerHTML = generateFeedback(responses);
            document.getElementById('feedback').style.display = 'block';
 
-           // Scroll to feedback section
            document.getElementById('feedback').scrollIntoView({ behavior: 'smooth' });
 
-           // Clear the form
            e.target.reset();
        } catch (error) {
            console.error('Error saving responses:', error);
@@ -374,10 +371,10 @@
        });
 
        try {
-           // Wait for Firebase to be ready
-           const db = await waitForFirebase();
+           if (!db) {
+               throw new Error('Firestore database not initialized. Please refresh the page.');
+           }
 
-           // Save contact message to Firestore using modular syntax
            await addDoc(collection(db, 'contactMessages'), contactData);
            alert('Message sent successfully!');
            e.target.reset();
