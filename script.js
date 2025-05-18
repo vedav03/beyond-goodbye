@@ -1,3 +1,22 @@
+// Helper function to wait for Firebase initialization
+async function waitForFirebase() {
+    return new Promise((resolve, reject) => {
+        const maxAttempts = 50; // Try for 5 seconds (50 * 100ms)
+        let attempts = 0;
+
+        const checkFirebase = setInterval(() => {
+            if (window.db) {
+                clearInterval(checkFirebase);
+                resolve(window.db);
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkFirebase);
+                reject(new Error('Firebase initialization timed out. Please refresh the page and try again.'));
+            }
+            attempts++;
+        }, 100); // Check every 100ms
+    });
+}
+
 // Show/hide state dropdown based on country
 document.getElementById('q1').addEventListener('change', function() {
     const q1_1Container = document.getElementById('q1_1_container');
@@ -320,8 +339,11 @@ document.getElementById('dli-survey').addEventListener('submit', async (e) => {
     });
 
     try {
+        // Wait for Firebase to be ready
+        const db = await waitForFirebase();
+
         // Save responses to Firebase
-        await window.db.collection('surveyResponses').add(responses);
+        await db.collection('surveyResponses').add(responses);
 
         // Generate and display feedback
         const feedbackContent = document.getElementById('feedback-content');
@@ -335,7 +357,7 @@ document.getElementById('dli-survey').addEventListener('submit', async (e) => {
         e.target.reset();
     } catch (error) {
         console.error('Error saving responses:', error);
-        alert('Error submitting survey. Please try again.');
+        alert(error.message || 'Error submitting survey. Please try again.');
     }
 });
 
@@ -347,15 +369,17 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     formData.forEach((value, key) => {
         contactData[key] = value;
     });
+
     try {
-        await window.db.collection('contactMessages').add(contactData);
+        // Wait for Firebase to be ready
+        const db = await waitForFirebase();
+
+        // Save contact message to Firebase
+        await db.collection('contactMessages').add(contactData);
         alert('Message sent successfully!');
         e.target.reset();
     } catch (error) {
         console.error('Error sending message:', error);
-        alert('Error sending message. Please try again.');
-    }
-});.error('Error sending message:', error);
-        alert('Error sending message. Please try again.');
+        alert(error.message || 'Error sending message. Please try again.');
     }
 });
