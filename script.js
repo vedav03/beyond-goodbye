@@ -370,5 +370,3 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
         alert('Error sending message. Please try again.');
     }
 });
-    });
-});
