@@ -8,6 +8,7 @@
        <script type="module">
            import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
            import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
            // Firebase configuration
            const firebaseConfig = {
                apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
@@ -17,18 +18,22 @@
                messagingSenderId: "658341235982",
                appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
            };
+
            try {
                // Initialize Firebase
                const app = initializeApp(firebaseConfig);
                const db = getFirestore(app);
-               if (db && typeof db.collection === 'function') {
+
+               // Validate Firestore instance
+               if (db && typeof db === 'object' && db.type === 'firestore') {
                    window.db = db;
-                   console.log('Firebase initialized successfully, window.db is a Firestore instance:', window.db);
+                   console.log('Firebase initialized successfully, window.db is set:', window.db);
                } else {
-                   console.error('Firebase initialization error: db is not a valid Firestore instance', db);
+                   throw new Error('Invalid Firestore instance created');
                }
            } catch (error) {
-               console.error('Firebase initialization failed:', error);
+               console.error('Firebase initialization error:', error);
+               window.db = null; // Prevent further attempts with an invalid instance
            }
        </script>
    </head>
