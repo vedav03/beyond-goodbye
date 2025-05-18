@@ -342,6 +342,11 @@ document.getElementById('dli-survey').addEventListener('submit', async (e) => {
         // Wait for Firebase to be ready
         const db = await waitForFirebase();
 
+        // Verify db is a Firestore instance
+        if (!db || typeof db.collection !== 'function') {
+            throw new Error('Invalid Firestore instance. Check console for details.');
+        }
+
         // Save responses to Firebase
         await db.collection('surveyResponses').add(responses);
 
@@ -373,6 +378,11 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     try {
         // Wait for Firebase to be ready
         const db = await waitForFirebase();
+
+        // Verify db is a Firestore instance
+        if (!db || typeof db.collection !== 'function') {
+            throw new Error('Invalid Firestore instance. Check console for details.');
+        }
 
         // Save contact message to Firebase
         await db.collection('contactMessages').add(contactData);
