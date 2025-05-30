@@ -1,728 +1,771 @@
 <!DOCTYPE html>
-   <html lang="en">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>Beyond Goodbye - Death Literacy</title>
-       <link rel="stylesheet" href="styles.css">
-       <script type="module">
-           import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-           import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-
-           // Firebase configuration
-           const firebaseConfig = {
-               apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
-               authDomain: "beyond-goodbye.firebaseapp.com",
-               projectId: "beyond-goodbye",
-               storageBucket: "beyond-goodbye.firebasestorage.app",
-               messagingSenderId: "658341235982",
-               appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
-           };
-
-           try {
-               // Initialize Firebase
-               const app = initializeApp(firebaseConfig);
-               const db = getFirestore(app);
-
-               // Validate Firestore instance
-               if (db && typeof db === 'object' && db.type === 'firestore') {
-                   window.db = db;
-                   console.log('Firebase initialized successfully, window.db is set:', window.db);
-               } else {
-                   throw new Error('Invalid Firestore instance created');
-               }
-           } catch (error) {
-               console.error('Firebase initialization error:', error);
-               window.db = null; // Prevent further attempts with an invalid instance
-           }
-       </script>
-   </head>
-   <body>
-       <header>
-           <img src="logo.png" alt="Beyond Goodbye Logo" style="width: 150px;">
-           <h1>Beyond Goodbye</h1>
-           <p>Assisting you in planning beyond the end.</p>
-       </header>
-       <main>
-           <section id="intro">
-               <h2>Welcome to Beyond Goodbye</h2>
-               <p>Learn about death literacy and take our survey to understand your knowledge and skills.</p>
-           </section>
-           <section id="survey">
-               <h2>Death Literacy Survey</h2>
-               <form id="dli-survey">
-                   <!-- Q1: Country of residence -->
-                   <label for="q1">Country of residence:</label>
-                   <select id="q1" name="q1" required>
-                       <option value="">Select a country</option>
-                       <option value="Australia">Australia</option>
-                       <option value="United States">United States</option>
-                       <option value="Canada">Canada</option>
-                       <!-- Add more countries as needed -->
-                   </select>
-
-                   <!-- Q1_1: State (if Australia) -->
-                   <div id="q1_1_container" style="display: none;">
-                       <label for="q1_1">Name of state (if Australia):</label>
-                       <select id="q1_1" name="q1_1">
-                           <option value="">Select a state</option>
-                           <option value="ACT">ACT</option>
-                           <option value="NSW">NSW</option>
-                           <option value="NT">NT</option>
-                           <option value="QLD">QLD</option>
-                           <option value="SA">SA</option>
-                           <option value="TAS">TAS</option>
-                           <option value="VIC">VIC</option>
-                           <option value="WA">WA</option>
-                       </select>
-                   </div>
-
-                   <!-- Q2: Where you live -->
-                   <label for="q2">Which best describes where you live?</label>
-                   <select id="q2" name="q2" required>
-                       <option value="">Select an option</option>
-                       <option value="Urban area">Urban area</option>
-                       <option value="Semi-urban area">Semi-urban area</option>
-                       <option value="Regional area">Regional area</option>
-                       <option value="Rural area">Rural area</option>
-                       <option value="Remote area">Remote area</option>
-                   </select>
-
-                   <!-- Q3: Age group -->
-                   <label for="q3">What age group do you belong to?</label>
-                   <select id="q3" name="q3" required>
-                       <option value="">Select an age group</option>
-                       <option value="Under 18">Under 18</option>
-                       <option value="18 - 24 years">18 - 24 years</option>
-                       <option value="25 - 34 years">25 - 34 years</option>
-                       <option value="35 - 44 years">35 - 44 years</option>
-                       <option value="45 - 54 years">45 - 54 years</option>
-                       <option value="55 - 64 years">55 - 64 years</option>
-                       <option value="65 - 79 years">65 - 79 years</option>
-                       <option value="80+ years">80+ years</option>
-                   </select>
-
-                   <!-- Q4: Gender -->
-                   <label for="q4">Please indicate your gender:</label>
-                   <select id="q4" name="q4" required>
-                       <option value="">Select an option</option>
-                       <option value="Woman/female">Woman/female</option>
-                       <option value="Man/male">Man/male</option>
-                       <option value="Non-binary/genderqueer/gender-fluid">Non-binary/genderqueer/gender-fluid</option>
-                       <option value="I use a different term">I use a different term</option>
-                       <option value="Prefer not to answer">Prefer not to answer</option>
-                   </select>
-
-                   <!-- Q5: Living with terminal illness -->
-                   <label for="q5">Are you currently living with a terminal illness?</label>
-                   <select id="q5" name="q5" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <!-- Q6: End-of-life plans -->
-                   <label for="q6_1">Have you written a will?</label>
-                   <select id="q6_1" name="q6_1" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q6_2">Have you written down your wishes for end-of-life care (e.g., advance care directive)?</label>
-                   <select id="q6_2" name="q6_2" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q6_3">Have you appointed someone to make decisions regarding your health or wellbeing?</label>
-                   <select id="q6_3" name="q6_3" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q6_4">Have you appointed someone to make decisions regarding finances or property?</label>
-                   <select id="q6_4" name="q6_4" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <!-- Q7-Q14: Yes/No Experience Questions -->
-                   <label for="q7">Have you kept someone company who is near death?</label>
-                   <select id="q7" name="q7" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q8">Have you witnessed the death of another person?</label>
-                   <select id="q8" name="q8" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q9">Have you spent time with a person after their death?</label>
-                   <select id="q9" name="q9" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q10">Have you helped care for a dead body?</label>
-                   <select id="q10" name="q10" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q11">Do you do paid work with people at end of life or supporting people through loss and grief?</label>
-                   <select id="q11" name="q11" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q12">Are you a volunteer with people at end of life or supporting people through loss and grief?</label>
-                   <select id="q12" name="q12" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q13">Have you attended training on helping people with dying, grief, or bereavement?</label>
-                   <select id="q13" name="q13" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <label for="q14">Are you currently a health or medical practitioner?</label>
-                   <select id="q14" name="q14" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <!-- Q15: Social Connection -->
-                   <label for="q15_1">Most people in my community are helpful (1 = Strongly disagree, 4 = Strongly agree):</label>
-                   <select id="q15_1" name="q15_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2 - Disagree</option>
-                       <option value="3">3 - Agree</option>
-                       <option value="4">4 - Strongly agree</option>
-                   </select>
-
-                   <label for="q15_2">I have someone I can call on for help (1 = Strongly disagree, 4 = Strongly agree):</label>
-                   <select id="q15_2" name="q15_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2 - Disagree</option>
-                       <option value="3">3 - Agree</option>
-                       <option value="4">4 - Strongly agree</option>
-                   </select>
-
-                   <label for="q15_3">I feel connected to my community (1 = Strongly disagree, 4 = Strongly agree):</label>
-                   <select id="q15_3" name="q15_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2 - Disagree</option>
-                       <option value="3">3 - Agree</option>
-                       <option value="4">4 - Strongly agree</option>
-                   </select>
-
-                   <label for="q15_4">I can rely on people in my community (1 = Strongly disagree, 4 = Strongly agree):</label>
-                   <select id="q15_4" name="q15_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2 - Disagree</option>
-                       <option value="3">3 - Agree</option>
-                       <option value="4">4 - Strongly agree</option>
-                   </select>
-
-                   <!-- Q16: Conversations about dying -->
-                   <label for="q16_1">Talking about death, dying, or grief to a close friend (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q16_1" name="q16_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q16_2">Talking about death, dying, or grief to a child (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q16_2" name="q16_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q16_3">Talking to a grieving person about their loss (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q16_3" name="q16_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q16_4">Talking to a health professional about support for a dying person (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q16_4" name="q16_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <!-- Q17: Providing hands-on care -->
-                   <label for="q17_1">Feed or help a person to eat (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q17_1" name="q17_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q17_2">Wash a person (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q17_2" name="q17_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q17_3">Lift a person or help them move (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q17_3" name="q17_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <label for="q17_4">Administer injections (1 = Not at all able, 5 = Very able):</label>
-                   <select id="q17_4" name="q17_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Not at all able</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Very able</option>
-                   </select>
-
-                   <!-- Q18: Previous experiences -->
-                   <label for="q18_1">Made me more emotionally prepared to support others (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q18_1" name="q18_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q18_2">Made me think about what is important in life (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q18_2" name="q18_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q18_3">Developed my wisdom and understanding (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q18_3" name="q18_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q18_4">Made me more compassionate toward myself (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q18_4" name="q18_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q18_5">Made me better prepared for future challenges (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q18_5" name="q18_5" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <!-- Q19: Factual knowledge -->
-                   <label for="q19_1">I know the rules when a person dies at home (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_1" name="q19_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_2">I know what documents are needed for death planning (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_2" name="q19_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_3">I know enough about healthcare to find support for a dying person (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_3" name="q19_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_4">I know enough to make decisions about funeral services (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_4" name="q19_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_5">I know how to access palliative care in my area (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_5" name="q19_5" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_6">I know how illnesses progress to make decisions about treatments (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_6" name="q19_6" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q19_7">I know how cemetery staff can help with funerals (1 = Do not agree, 5 = Strongly agree):</label>
-                   <select id="q19_7" name="q19_7" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <!-- Q20: Others can help -->
-                   <label for="q20_1">I know people to get support from local organizations (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q20_1" name="q20_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q20_2">I know people to help with day-to-day care (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q20_2" name="q20_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q20_3">I know people to get equipment for care (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q20_3" name="q20_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q20_4">I know people to get culturally appropriate support (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q20_4" name="q20_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q20_5">I know people to get emotional support for myself (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q20_5" name="q20_5" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <!-- Q21: Community support -->
-                   <label for="q21_1">Support for people with life-threatening illnesses (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q21_1" name="q21_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q21_2">Support for people nearing the end of their lives (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q21_2" name="q21_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q21_3">Support for people caring for a dying person (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q21_3" name="q21_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <label for="q21_4">Support for people who are grieving (1 = Strongly disagree, 5 = Strongly agree):</label>
-                   <select id="q21_4" name="q21_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Strongly disagree</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5 - Strongly agree</option>
-                   </select>
-
-                   <!-- Q22: Death competency -->
-                   <label for="q22_1">I am aware of emotions that characterize grief (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_1" name="q22_1" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_2">I feel prepared to face my dying process (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_2" name="q22_2" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_3">I can put words to my feelings about death (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_3" name="q22_3" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_4">I know who to contact when death occurs (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_4" name="q22_4" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_5">I will be able to cope with future losses (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_5" name="q22_5" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_6">I know how to listen to others, including the terminally ill (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_6" name="q22_6" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_7">I can help someone with their thoughts about death (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_7" name="q22_7" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_8">I can talk to a friend or family member about their death (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_8" name="q22_8" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <label for="q22_9">I can lessen anxiety around death topics (1 = Do not agree, 7 = Completely agree):</label>
-                   <select id="q22_9" name="q22_9" required>
-                       <option value="">Select an option</option>
-                       <option value="1">1 - Do not agree at all</option>
-                       <option value="2">2</option>
-                       <option value="3">3</option>
-                       <option value="4">4</option>
-                       <option value="5">5</option>
-                       <option value="6">6</option>
-                       <option value="7">7 - Completely agree</option>
-                   </select>
-
-                   <!-- Q23: Ancestry -->
-                   <label for="q23">What is your ancestry?</label>
-                   <select id="q23" name="q23" required>
-                       <option value="">Select an option</option>
-                       <option value="Australia">Australia</option>
-                       <option value="America">America</option>
-                       <option value="Chinese">Chinese</option>
-                       <option value="Filipino">Filipino</option>
-                       <option value="Vietnamese">Vietnamese</option>
-                       <option value="India">India</option>
-                       <option value="South Korean">South Korean</option>
-                       <option value="Japanese">Japanese</option>
-                       <option value="Other SouthEast and NorthEast Asian">Other SouthEast and NorthEast Asian</option>
-                       <option value="Other Southern and Central Asian">Other Southern and Central Asian</option>
-                       <option value="European">European</option>
-                       <option value="African and Middle Eastern">African and Middle Eastern</option>
-                       <option value="Oceanian">Oceanian</option>
-                       <option value="Other">Other</option>
-                       <option value="Prefer not to say">Prefer not to say</option>
-                   </select>
-
-                   <!-- Q24: Belief in afterlife -->
-                   <label for="q24">Do you believe in an afterlife?</label>
-                   <select id="q24" name="q24" required>
-                       <option value="">Select an option</option>
-                       <option value="Yes">Yes</option>
-                       <option value="No">No</option>
-                   </select>
-
-                   <!-- Q25: Religion -->
-                   <label for="q25">Which religion do you identify with?</label>
-                   <select id="q25" name="q25" required>
-                       <option value="">Select an option</option>
-                       <option value="Catholic">Catholic</option>
-                       <option value="Anglican">Anglican</option>
-                       <option value="Presbyterian">Presbyterian</option>
-                       <option value="Buddhism">Buddhism</option>
-                       <option value="Islam">Islam</option>
-                       <option value="Greek Orthodox">Greek Orthodox</option>
-                       <option value="Baptist">Baptist</option>
-                       <option value="Hinduism">Hinduism</option>
-                       <option value="Spiritual">Spiritual</option>
-                       <option value="None">None</option>
-                       <option value="Other">Other</option>
-                       <option value="Prefer not to say">Prefer not to say</option>
-                   </select>
-
-                   <button type="submit">Submit Survey</button>
-               </form>
-           </section>
-
-           <section id="feedback" style="display: none;">
-               <h2>Your Death Literacy Feedback</h2>
-               <div id="feedback-content">
-                   <!-- Feedback will be dynamically inserted here -->
-               </div>
-           </section>
-
-           <section id="contact">
-               <h2>Ask a Question</h2>
-               <form id="contact-form">
-                   <label for="name">Name:</label>
-                   <input type="text" id="name" name="name" required>
-                   <label for="email">Email:</label>
-                   <input type="email" id="email" name="email" required>
-                   <label for="message">Message:</label>
-                   <textarea id="message" name="message" required></textarea>
-                   <button type="submit">Send</button>
-               </form>
-           </section>
-       </main>
-       <footer>
-           <p>Learn more at <a href="https://www.deathliteracy.institute/">Death Literacy Institute</a></p>
-       </footer>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Goodbye - Death Literacy</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBqKO0IiuPzgAsAkJc_etzrc7vWxxAQ0c",
+            authDomain: "beyond-goodbye.firebaseapp.com",
+            projectId: "beyond-goodbye",
+            storageBucket: "beyond-goodbye.firebasestorage.app",
+            messagingSenderId: "658341235982",
+            appId: "1:658341235982:web:5463846ed7dc4d9676db5f"
+        };
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            // Validate Firestore instance
+            if (db && typeof db === 'object' && db.type === 'firestore') {
+                window.db = db;
+                console.log('Firebase initialized successfully, window.db is set:', window.db);
+            } else {
+                throw new Error('Invalid Firestore instance created');
+            }
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            window.db = null; // Prevent further attempts with an invalid instance
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Beyond Goodbye Logo" style="width: 150px;">
+        <h1>Beyond Goodbye</h1>
+        <p>Assisting you in planning beyond the end.</p>
+    </header>
+    <main>
+        <section id="intro">
+            <h2>Welcome to Beyond Goodbye</h2>
+            <p>Learn about death literacy and take our survey to understand your knowledge and skills.</p>
+        </section>
+        <section id="survey">
+            <h2>Death Literacy Survey</h2>
+            <form id="dli-survey">
+                <!-- Q1: Country of residence -->
+                <label for="q1">Country of residence:</label>
+                <select id="q1" name="q1" required>
+                    <option value="">Select a country</option>
+                    <option value="Australia">Australia</option>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <!-- Add more countries as needed -->
+                </select>
+
+                <!-- Q1_1: State (if Australia) -->
+                <div id="q1_1_container" style="display: none;">
+                    <label for="q1_1">Name of state (if Australia):</label>
+                    <select id="q1_1" name="q1_1">
+                        <option value="">Select a state</option>
+                        <option value="ACT">ACT</option>
+                        <option value="NSW">NSW</option>
+                        <option value="NT">NT</option>
+                        <option value="QLD">QLD</option>
+                        <option value="SA">SA</option>
+                        <option value="TAS">TAS</option>
+                        <option value="VIC">VIC</option>
+                        <option value="WA">WA</option>
+                    </select>
+                </div>
+
+                <!-- Q2: Where you live -->
+                <label for="q2">Which best describes where you live?</label>
+                <select id="q2" name="q2" required>
+                    <option value="">Select an option</option>
+                    <option value="Urban area">Urban area</option>
+                    <option value="Semi-urban area">Semi-urban area</option>
+                    <option value="Regional area">Regional area</option>
+                    <option value="Rural area">Rural area</option>
+                    <option value="Remote area">Remote area</option>
+                </select>
+
+                <!-- Q3: Age group -->
+                <label for="q3">What age group do you belong to?</label>
+                <select id="q3" name="q3" required>
+                    <option value="">Select an age group</option>
+                    <option value="Under 18">Under 18</option>
+                    <option value="18 - 24 years">18 - 24 years</option>
+                    <option value="25 - 34 years">25 - 34 years</option>
+                    <option value="35 - 44 years">35 - 44 years</option>
+                    <option value="45 - 54 years">45 - 54 years</option>
+                    <option value="55 - 64 years">55 - 64 years</option>
+                    <option value="65 - 79 years">65 - 79 years</option>
+                    <option value="80+ years">80+ years</option>
+                </select>
+
+                <!-- Q4: Gender -->
+                <label for="q4">Please indicate your gender:</label>
+                <select id="q4" name="q4" required>
+                    <option value="">Select an option</option>
+                    <option value="Woman/female">Woman/female</option>
+                    <option value="Man/male">Man/male</option>
+                    <option value="Non-binary/genderqueer/gender-fluid">Non-binary/genderqueer/gender-fluid</option>
+                    <option value="I use a different term">I use a different term</option>
+                    <option value="Prefer not to answer">Prefer not to answer</option>
+                </select>
+
+                <!-- Q5: Living with terminal illness -->
+                <label for="q5">Are you currently living with a terminal illness?</label>
+                <select id="q5" name="q5" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <!-- Q6: End-of-life plans -->
+                <label for="q6_1">Have you written a will?</label>
+                <select id="q6_1" name="q6_1" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q6_2">Have you written down your wishes for end-of-life care (e.g., advance care directive)?</label>
+                <select id="q6_2" name="q6_2" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q6_3">Have you appointed someone to make decisions regarding your health or wellbeing?</label>
+                <select id="q6_3" name="q6_3" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q6_4">Have you appointed someone to make decisions regarding finances or property?</label>
+                <select id="q6_4" name="q6_4" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <!-- Q7-Q14: Yes/No Experience Questions -->
+                <label for="q7">Have you kept someone company who is near death?</label>
+                <select id="q7" name="q7" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q8">Have you witnessed the death of another person?</label>
+                <select id="q8" name="q8" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q9">Have you spent time with a person after their death?</label>
+                <select id="q9" name="q9" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q10">Have you helped care for a dead body?</label>
+                <select id="q10" name="q10" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q11">Do you do paid work with people at end of life or supporting people through loss and grief?</label>
+                <select id="q11" name="q11" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q12">Are you a volunteer with people at end of life or supporting people through loss and grief?</label>
+                <select id="q12" name="q12" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q13">Have you attended training on helping people with dying, grief, or bereavement?</label>
+                <select id="q13" name="q13" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="q14">Are you currently a health or medical practitioner?</label>
+                <select id="q14" name="q14" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <!-- Q15: Social Connection -->
+                <label for="q15_1">Most people in my community are helpful (1 = Strongly disagree, 4 = Strongly agree):</label>
+                <select id="q15_1" name="q15_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2 - Disagree</option>
+                    <option value="3">3 - Agree</option>
+                    <option value="4">4 - Strongly agree</option>
+                </select>
+
+                <label for="q15_2">I have someone I can call on for help (1 = Strongly disagree, 4 = Strongly agree):</label>
+                <select id="q15_2" name="q15_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2 - Disagree</option>
+                    <option value="3">3 - Agree</option>
+                    <option value="4">4 - Strongly agree</option>
+                </select>
+
+                <label for="q15_3">I feel connected to my community (1 = Strongly disagree, 4 = Strongly agree):</label>
+                <select id="q15_3" name="q15_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2 - Disagree</option>
+                    <option value="3">3 - Agree</option>
+                    <option value="4">4 - Strongly agree</option>
+                </select>
+
+                <label for="q15_4">I can rely on people in my community (1 = Strongly disagree, 4 = Strongly agree):</label>
+                <select id="q15_4" name="q15_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2 - Disagree</option>
+                    <option value="3">3 - Agree</option>
+                    <option value="4">4 - Strongly agree</option>
+                </select>
+
+                <!-- Q16: Conversations about dying -->
+                <label for="q16_1">Talking about death, dying, or grief to a close friend (1 = Not at all able, 5 = Very able):</label>
+                <select id="q16_1" name="q16_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q16_2">Talking about death, dying, or grief to a child (1 = Not at all able, 5 = Very able):</label>
+                <select id="q16_2" name="q16_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q16_3">Talking to a grieving person about their loss (1 = Not at all able, 5 = Very able):</label>
+                <select id="q16_3" name="q16_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q16_4">Talking to a health professional about support for a dying person (1 = Not at all able, 5 = Very able):</label>
+                <select id="q16_4" name="q16_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <!-- Q17: Providing hands-on care -->
+                <label for="q17_1">Feed or help a person to eat (1 = Not at all able, 5 = Very able):</label>
+                <select id="q17_1" name="q17_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q17_2">Wash a person (1 = Not at all able, 5 = Very able):</label>
+                <select id="q17_2" name="q17_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q17_3">Lift a person or help them move (1 = Not at all able, 5 = Very able):</label>
+                <select id="q17_3" name="q17_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <label for="q17_4">Administer injections (1 = Not at all able, 5 = Very able):</label>
+                <select id="q17_4" name="q17_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Not at all able</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Very able</option>
+                </select>
+
+                <!-- Q18: Previous experiences -->
+                <label for="q18_1">Made me more emotionally prepared to support others (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q18_1" name="q18_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q18_2">Made me think about what is important in life (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q18_2" name="q18_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q18_3">Developed my wisdom and understanding (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q18_3" name="q18_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q18_4">Made me more compassionate toward myself (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q18_4" name="q18_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q18_5">Made me better prepared for future challenges (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q18_5" name="q18_5" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <!-- Q19: Factual knowledge -->
+                <label for="q19_1">I know the rules when a person dies at home (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_1" name="q19_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_2">I know what documents are needed for death planning (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_2" name="q19_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_3">I know enough about healthcare to find support for a dying person (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_3" name="q19_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_4">I know enough to make decisions about funeral services (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_4" name="q19_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_5">I know how to access palliative care in my area (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_5" name="q19_5" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_6">I know how illnesses progress to make decisions about treatments (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_6" name="q19_6" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q19_7">I know how cemetery staff can help with funerals (1 = Do not agree, 5 = Strongly agree):</label>
+                <select id="q19_7" name="q19_7" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <!-- Q20: Others can help -->
+                <label for="q20_1">I know people to get support from local organizations (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q20_1" name="q20_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q20_2">I know people to help with day-to-day care (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q20_2" name="q20_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q20_3">I know people to get equipment for care (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q20_3" name="q20_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q20_4">I know people to get culturally appropriate support (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q20_4" name="q20_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q20_5">I know people to get emotional support for myself (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q20_5" name="q20_5" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <!-- Q21: Community support -->
+                <label for="q21_1">Support for people with life-threatening illnesses (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q21_1" name="q21_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q21_2">Support for people nearing the end of their lives (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q21_2" name="q21_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q21_3">Support for people caring for a dying person (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q21_3" name="q21_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <label for="q21_4">Support for people who are grieving (1 = Strongly disagree, 5 = Strongly agree):</label>
+                <select id="q21_4" name="q21_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Strongly disagree</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Strongly agree</option>
+                </select>
+
+                <!-- Q22: Death competency -->
+                <label for="q22_1">I am aware of emotions that characterize grief (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_1" name="q22_1" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_2">I feel prepared to face my dying process (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_2" name="q22_2" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_3">I can put words to my feelings about death (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_3" name="q22_3" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_4">I know who to contact when death occurs (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_4" name="q22_4" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_5">I will be able to cope with future losses (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_5" name="q22_5" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_6">I know how to listen to others, including the terminally ill (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_6" name="q22_6" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_7">I can help someone with their thoughts about death (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_7" name="q22_7" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_8">I can talk to a friend or family member about their death (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_8" name="q22_8" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <label for="q22_9">I can lessen anxiety around death topics (1 = Do not agree, 7 = Completely agree):</label>
+                <select id="q22_9" name="q22_9" required>
+                    <option value="">Select an option</option>
+                    <option value="1">1 - Do not agree at all</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7 - Completely agree</option>
+                </select>
+
+                <!-- Q23: Ancestry -->
+                <label for="q23">What is your ancestry?</label>
+                <select id="q23" name="q23" required>
+                    <option value="">Select an option</option>
+                    <option value="Australia">Australia</option>
+                    <option value="America">America</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Filipino">Filipino</option>
+                    <option value="Vietnamese">Vietnamese</option>
+                    <option value="India">India</option>
+                    <option value="South Korean">South Korean</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Other SouthEast and NorthEast Asian">Other SouthEast and NorthEast Asian</option>
+                    <option value="Other Southern and Central Asian">Other Southern and Central Asian</option>
+                    <option value="European">European</option>
+                    <option value="African and Middle Eastern">African and Middle Eastern</option>
+                    <option value="Oceanian">Oceanian</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+
+                <!-- Q24: Belief in afterlife -->
+                <label for="q24">Do you believe in an afterlife?</label>
+                <select id="q24" name="q24" required>
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <!-- Q25: Religion -->
+                <label for="q25">Which religion do you identify with?</label>
+                <select id="q25" name="q25" required>
+                    <option value="">Select an option</option>
+                    <option value="Catholic">Catholic</option>
+                    <option value="Anglican">Anglican</option>
+                    <option value="Presbyterian">Presbyterian</option>
+                    <option value="Buddhism">Buddhism</option>
+                    <option value="Islam">Islam</option>
+                    <option value="Greek Orthodox">Greek Orthodox</option>
+                    <option value="Baptist">Baptist</option>
+                    <option value="Hinduism">Hinduism</option>
+                    <option value="Spiritual">Spiritual</option>
+                    <option value="None">None</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+
+                <button type="submit">Submit Survey</button>
+            </form>
+        </section>
+
+        <section id="feedback" style="display: none;">
+            <h2>Your Death Literacy Feedback</h2>
+            <div id="feedback-content">
+                <!-- Feedback will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <div class="download-section">
+          <h2>Downloadable Resources</h2>
+          <p>Access our death literacy resources below:</p>
+          <ul>
+            <li><a href="docs/Checklist.pdf" download>Checklist (PDF)</a></li>
+            <li><a href="docs/Fact-sheet.pdf" download>Fact Sheet (PDF)</a></li>
+            <li><a href="docs/Infographic.pdf" download>Infographic (PDF)</a></li>
+          </ul>
+        </div>
+        <style>
+          .download-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+          }
+          .download-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+          }
+          .download-section p {
+            margin-bottom: 10px;
+          }
+          .download-section ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          .download-section li {
+            margin: 10px 0;
+          }
+          .download-section a {
+            color: #007bff;
+            text-decoration: none;
+          }
+          .download-section a:hover {
+            text-decoration: underline;
+          }
+        </style>
+
+        <section id="contact">
+            <h2>Ask a Question</h2>
+            <form id="contact-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>Learn more at <a href="https://www.deathliteracy.institute/">Death Literacy Institute</a></p>
+    </footer>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
        <script type="module" src="script.js"></script>
    </body>
    </html>
